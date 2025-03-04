@@ -17,6 +17,7 @@ app.use(cors());
 app.use(pinoHttp({ logger }));
 
 app.use('/contacts', contactsRouter);
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 

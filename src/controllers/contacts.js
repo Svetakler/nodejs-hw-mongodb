@@ -9,39 +9,47 @@ import {
 
 export const getContactsController = async (req, res) => {
   const contacts = await getContacts();
-  res
-    .status(200)
-    .json({ message: 'Contacts retrieved successfully', data: contacts });
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: contacts,
+  });
 };
 
 export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
   if (!contact) throw createError(404, 'Contact not found');
-  res
-    .status(200)
-    .json({ message: 'Contact retrieved successfully', data: contact });
+  res.json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
 };
 
 export const createContactController = async (req, res) => {
   const newContact = await createContact(req.body);
-  res
-    .status(201)
-    .json({ message: 'Contact created successfully', data: newContact });
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a contact!`,
+    data: newContact,
+  });
 };
 
 export const updateContactController = async (req, res) => {
   const { contactId } = req.params;
   const updatedContact = await updateContact(contactId, req.body);
   if (!updatedContact) throw createError(404, 'Contact not found');
-  res
-    .status(200)
-    .json({ message: 'Contact updated successfully', data: updatedContact });
+  res.json({
+    status: 200,
+    message: `Successfully updated a contact!`,
+    data: updatedContact,
+  });
 };
 
 export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
   const deletedContact = await deleteContact(contactId);
   if (!deletedContact) throw createError(404, 'Contact not found');
-  res.status(200).json({ message: 'Contact deleted successfully' });
+  res.status(204).send();
 };
