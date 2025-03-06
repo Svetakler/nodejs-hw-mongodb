@@ -1,3 +1,5 @@
+import createError from 'http-errors';
+
 import {
   findAllContacts,
   findContactById,
@@ -83,20 +85,8 @@ export const updateContactById = async (req, res) => {
 };
 
 export const deleteContactById = async (req, res) => {
-  try {
-    const { contactId } = req.params;
-    const deletedContact = await deleteContact(contactId);
-
-    if (deletedContact) {
-      res.status(200).json({
-        status: 200,
-        message: `Successfully deleted contact with id ${contactId}!`,
-        data: deletedContact,
-      });
-    } else {
-      res.status(404).json({ message: 'Contact not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const { contactId } = req.params;
+  const deletedContact = await deleteContact(contactId);
+  if (!deletedContact) throw createError(404, 'Contact not found');
+  res.status(204).send();
 };
