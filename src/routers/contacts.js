@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   getAllContacts,
   getContactById,
@@ -12,19 +13,19 @@ import { contactSchema, contactUpdateSchema } from '../schemas/contact.js';
 
 const router = Router();
 
-router.get('/', getAllContacts);
+router.get('/', ctrlWrapper(getAllContacts));
 
-router.get('/:contactId', isValidId, getContactById);
+router.get('/:contactId', isValidId, ctrlWrapper(getContactById));
 
-router.post('/', validateBody(contactSchema), createNewContact);
+router.post('/', validateBody(contactSchema), ctrlWrapper(createNewContact));
 
 router.patch(
   '/:contactId',
   isValidId,
   validateBody(contactUpdateSchema),
-  updateContactById,
+  ctrlWrapper(updateContactById),
 );
 
-router.delete('/:contactId', isValidId, deleteContactById);
+router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactById));
 
 export default router;
