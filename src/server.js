@@ -3,7 +3,8 @@ import cors from 'cors';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 import dotenv from 'dotenv';
-import contactsRouter from './routers/contacts.js';
+import cookieParser from 'cookie-parser';
+import router from './routers/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { initMongoConnection } from './db/initMongoConnection.js';
@@ -14,9 +15,10 @@ const logger = pino();
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 app.use(pinoHttp({ logger }));
 
-app.use('/contacts', contactsRouter);
+app.use(router);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
