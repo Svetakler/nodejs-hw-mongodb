@@ -52,30 +52,35 @@ export const refresh = async (req, res) => {
       .json({ message: 'Refresh token or sessionId is missing' });
   }
 
-  const { accessToken, newRefreshToken, newSessionId } = await refreshSession(
-    refreshToken,
-    sessionId,
-  );
+  try {
+    const {
+      accessToken,
+      refreshToken: newRefreshToken,
+      sessionId: newSessionId,
+    } = await refreshSession({ refreshToken, sessionId });
 
-  res.cookie('refreshToken', newRefreshToken, {
-    httpOnly: true,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'None',
-  });
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'None',
+    });
 
-  res.cookie('sessionId', newSessionId, {
-    httpOnly: true,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'None',
-  });
+    res.cookie('sessionId', newSessionId, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'None',
+    });
 
-  res.status(200).json({
-    status: 200,
-    message: 'Session refreshed successfully!',
-    data: { accessToken },
-  });
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully refreshed a session!',
+      data: { accessToken },
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
 };
 
 export const logout = async (req, res) => {

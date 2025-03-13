@@ -2,6 +2,7 @@ import { model, Schema } from 'mongoose';
 
 const sessionsSchema = new Schema(
   {
+    sessionId: { type: String, required: true, unique: true },
     userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
     accessToken: { type: String, required: true },
     refreshToken: { type: String, required: true },

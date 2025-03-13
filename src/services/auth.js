@@ -53,24 +53,38 @@ const createSession = (userId) => {
 };
 
 export const refreshSession = async ({ sessionId, refreshToken }) => {
-  const session = await SessionsCollection.findOne({ sessionId, refreshToken });
+  try {
+    const session = await SessionsCollection.findOne({
+      sessionId,
+      refreshToken,
+    });
 
-  if (!session) throw createHttpError(401, 'Session not found');
+    if (!session) {
+      console.log('Session not found in database');
+      throw createHttpError(401, 'Session not found');
+    }
 
-  const isSessionTokenExpired =
-    new Date() > new Date(session.refreshTokenValidUntil);
+    console.log('Session found:', session);
 
-  if (isSessionTokenExpired) {
-    throw createHttpError(401, 'Session token expired');
+    const isSessionTokenExpired =
+      new Date() > new Date(session.refreshTokenValidUntil);
+
+    if (isSessionTokenExpired) {
+      throw createHttpError(401, 'Session token expired');
+    }
+
+    await SessionsCollection.deleteOne({ sessionId, refreshToken });
+
+    const newSession = createSession(session.userId);
+
+    await SessionsCollection.create(newSession);
+    console.log('New session saved to database');
+
+    return newSession;
+  } catch (error) {
+    console.error('Error in refreshSession:', error);
+    throw error;
   }
-
-  await SessionsCollection.deleteOne({ sessionId, refreshToken });
-
-  const newSession = createSession(session.userId);
-
-  await SessionsCollection.create(newSession);
-
-  return newSession;
 };
 
 export const logoutUser = async (sessionId) => {
