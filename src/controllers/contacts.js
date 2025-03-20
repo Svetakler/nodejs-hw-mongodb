@@ -39,7 +39,8 @@ export const getAllContacts = async (req, res) => {
 export const getContactById = async (req, res) => {
   try {
     const { contactId } = req.params;
-    const contact = await findContactById(contactId);
+    const { _id: userId } = req.user;
+    const contact = await findContactById(contactId, userId);
 
     if (contact) {
       res.status(200).json({
@@ -97,7 +98,7 @@ export const updateContactById = async (req, res) => {
   }
 };
 
-export const patchContactController = async (req, res) => {
+export const patchContactById = async (req, res) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
   const photo = req.file;
