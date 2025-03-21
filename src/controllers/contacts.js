@@ -78,7 +78,6 @@ export const createNewContact = async (req, res) => {
 export const patchContactById = async (req, res) => {
   const { contactId } = req.params;
 
-  const { _id: userId } = req.user;
   const photo = req.file;
 
   let photoUrl;
@@ -92,11 +91,10 @@ export const patchContactById = async (req, res) => {
     console.log('No photo file received');
   }
 
-  const updatedContact = await updateContact(
-    contactId,
-    { ...req.body, photo: photoUrl },
-    userId,
-  );
+  const updatedContact = await updateContact(contactId, {
+    ...req.body,
+    photo: photoUrl,
+  });
 
   if (!updatedContact) {
     return res.status(404).json({ message: 'Contact not found' });
@@ -107,6 +105,25 @@ export const patchContactById = async (req, res) => {
     message: 'Successfully patched a contact!',
     data: updatedContact,
   });
+};
+
+export const updateContactById = async (req, res) => {
+  try {
+    const { contactId } = req.params;
+    const updatedContact = await updateContact(contactId, req.body);
+
+    if (updatedContact) {
+      res.status(200).json({
+        status: 200,
+        message: `Successfully updated contact with id ${contactId}!`,
+        data: updatedContact,
+      });
+    } else {
+      res.status(404).json({ message: 'Contact not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const deleteContactById = async (req, res) => {

@@ -1,6 +1,5 @@
 import { Contact } from '../models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { ObjectId } from 'mongodb';
 
 export const findAllContacts = async (
   { page, perPage },
@@ -30,12 +29,7 @@ export const findAllContacts = async (
 };
 
 export const findContactById = async (contactId, userId) => {
-  const contact = await Contact.findOne({
-    _id: new ObjectId(contactId),
-    userId,
-  });
-
-  return contact;
+  return await Contact.findOne({ _id: contactId, userId });
 };
 
 export const createContact = async (contactData, userId) => {
