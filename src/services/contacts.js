@@ -1,5 +1,6 @@
 import { Contact } from '../models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { ObjectId } from 'mongodb';
 
 export const findAllContacts = async (
   { page, perPage },
@@ -29,7 +30,12 @@ export const findAllContacts = async (
 };
 
 export const findContactById = async (contactId, userId) => {
-  return await Contact.findOne({ _id: contactId, userId });
+  const contact = await Contact.findOne({
+    _id: new ObjectId(contactId),
+    userId,
+  });
+
+  return contact;
 };
 
 export const createContact = async (contactData, userId) => {
@@ -37,6 +43,12 @@ export const createContact = async (contactData, userId) => {
 };
 
 export const updateContact = async (contactId, updateData, userId) => {
+  console.log(
+    'Searching for contact with contactId:',
+    contactId,
+    'and userId:',
+    userId,
+  );
   return await Contact.findOneAndUpdate(
     { _id: contactId, userId },
     updateData,

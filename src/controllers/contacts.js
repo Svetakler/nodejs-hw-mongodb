@@ -37,23 +37,19 @@ export const getAllContacts = async (req, res) => {
 };
 
 export const getContactById = async (req, res) => {
-  try {
-    const { contactId } = req.params;
-    const { _id: userId } = req.user;
-    const contact = await findContactById(contactId, userId);
+  const { contactId } = req.params;
+  const { _id: userId } = req.user;
+  const contact = await findContactById(contactId, userId);
 
-    if (contact) {
-      res.status(200).json({
-        status: 200,
-        message: `Successfully found contact with id ${contactId}!`,
-        data: contact,
-      });
-    } else {
-      res.status(404).json({ message: 'Contact not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (!contact) {
+    return res.status(404).json({ message: 'Contact not found' });
   }
+
+  res.status(200).json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
 };
 
 export const createNewContact = async (req, res) => {
@@ -79,46 +75,32 @@ export const createNewContact = async (req, res) => {
   });
 };
 
-export const updateContactById = async (req, res) => {
-  try {
-    const { contactId } = req.params;
-    const updatedContact = await updateContact(contactId, req.body);
-
-    if (updatedContact) {
-      res.status(200).json({
-        status: 200,
-        message: `Successfully updated contact with id ${contactId}!`,
-        data: updatedContact,
-      });
-    } else {
-      res.status(404).json({ message: 'Contact not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 export const patchContactById = async (req, res) => {
   const { contactId } = req.params;
+
   const { _id: userId } = req.user;
   const photo = req.file;
 
   let photoUrl;
-
   if (photo) {
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
     }
+  } else {
+    console.log('No photo file received');
   }
+
   const updatedContact = await updateContact(
     contactId,
     { ...req.body, photo: photoUrl },
     userId,
   );
 
-  if (!updatedContact) throw createHttpError(404, 'Contact not found');
+  if (!updatedContact) {
+    return res.status(404).json({ message: 'Contact not found' });
+  }
 
   res.json({
     status: 200,
@@ -129,7 +111,10 @@ export const patchContactById = async (req, res) => {
 
 export const deleteContactById = async (req, res) => {
   const { contactId } = req.params;
-  const deletedContact = await deleteContact(contactId);
-  if (!deletedContact) throw Error(404, 'Contact not found');
+  const { _id: userId } = req.user;
+
+  const deletedContact = await deleteContact(contactId, userId);
+  if (!deletedContact) throw createHttpError(404, 'Contact not found');
+
   res.status(204).send();
 };
