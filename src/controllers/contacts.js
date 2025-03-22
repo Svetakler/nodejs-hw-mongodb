@@ -53,26 +53,42 @@ export const getContactById = async (req, res) => {
 };
 
 export const createNewContact = async (req, res) => {
-  const { _id: userId } = req.user;
-  const photo = req.file;
+  try {
+    const { _id: userId } = req.user;
 
-  let photoUrl;
-
-  if (photo) {
-    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      photoUrl = await saveFileToCloudinary(photo);
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
+    if (!userId) {
+      return res.status(400).json({
+        status: 400,
+        message: 'User ID not found in session',
+      });
     }
+
+    const photo = req.file;
+    let photoUrl;
+
+    if (photo) {
+      if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+        photoUrl = await saveFileToCloudinary(photo);
+      } else {
+        photoUrl = await saveFileToUploadDir(photo);
+      }
+    }
+
+    const contact = await createContact(req.body, userId, photoUrl);
+
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully created a contact!',
+      data: contact,
+    });
+  } catch (error) {
+    console.error('Error creating contact:', error);
+    res.status(500).json({
+      status: 500,
+      message: 'Something went wrong',
+      error: error.message,
+    });
   }
-
-  const contact = await createContact({ ...req.body, userId, photo: photoUrl });
-
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: contact,
-  });
 };
 
 export const patchContactById = async (req, res) => {
