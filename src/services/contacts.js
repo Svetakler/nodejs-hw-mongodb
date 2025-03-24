@@ -1,30 +1,52 @@
+import createHttpError from 'http-errors';
+
+import { SORT_ORDER } from '../constants/index.js';
+
 import { Contact } from '../models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const findAllContacts = async (
-  { page, perPage },
-  { sortBy, sortOrder },
-  filter,
+export const findAllContacts = async ({
+  page = 1,
+  perPage = 10,
+  sortOrder = SORT_ORDER.ASC,
+  sortBy = '_id',
+  filter = {},
   userId,
-) => {
+}) => {
+  const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const sortOptions = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+  const contactQuery = Contact.find({ userId });
 
-  const completeFilter = { ...filter, userId };
+  if (filter.isFavourite) {
+    contactQuery.where('isFavourite').equals(filter.isFavourite);
+  }
 
-  const totalItems = await Contact.countDocuments(completeFilter);
+  if (filter.contactType) {
+    contactQuery.where('contactType').equals(filter.contactType);
+  }
 
-  const contacts = await Contact.find(completeFilter)
-    .sort(sortOptions)
+  const contactCount = await Contact.find({ userId })
+    .merge(contactQuery)
+    .countDocuments();
+
+  const totalPages = Math.ceil(contactCount / perPage);
+
+  if (page > totalPages && totalPages > 0) {
+    throw createHttpError(400, 'Invalid page number');
+  }
+
+  const contacts = await contactQuery
     .skip(skip)
-    .limit(perPage);
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
 
-  const paginationData = calculatePaginationData(totalItems, page, perPage);
+  const paginationData = calculatePaginationData(contactCount, perPage, page);
 
   return {
-    ...paginationData,
     data: contacts,
+    ...paginationData,
   };
 };
 
@@ -32,26 +54,18 @@ export const findContactById = async (contactId, userId) => {
   return await Contact.findOne({ _id: contactId, userId });
 };
 
-export const createContact = async (contactData, userId, photoUrl) => {
-  return await Contact.create({
-    ...contactData,
-    userId,
-    photo: photoUrl,
-  });
+export const createContact = (payload) => {
+  return Contact.create(payload);
 };
 
-export const updateContact = async (contactId, updateData, userId) => {
-  console.log(
-    'Searching for contact with contactId:',
-    contactId,
-    'and userId:',
-    userId,
-  );
-  return await Contact.findOneAndUpdate(
+export const updateContact = async (contactId, payload, userId) => {
+  const updatedContact = await Contact.findOneAndUpdate(
     { _id: contactId, userId },
-    updateData,
-    { new: true },
+    payload,
+    { new: true, includeResultMetadata: true },
   );
+
+  return updatedContact.value;
 };
 
 export const deleteContact = async (contactId, userId) => {
