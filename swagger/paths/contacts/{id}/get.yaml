@@ -6,8 +6,8 @@ description: Retrieve a specific contact by its unique identifier
 security:
   - bearerAuth: []
 parameters:
-  - in: path
-    name: id
+  - name: contactId
+    in: path
     required: true
     schema:
       type: string
@@ -27,19 +27,8 @@ responses:
               type: string
               example: Successfully found contact
             data:
-              $ref: '../../components/schemas/contact.yaml'
+              $ref: '../../../components/schemas/contact.yaml'
   '401':
-    $ref: '../../components/responses/401.yaml'
+    $ref: '../../../components/responses/401.yaml'
   '404':
-    description: Contact not found
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            status:
-              type: integer
-              example: 404
-            message:
-              type: string
-              example: Contact not found
+    $ref: '../../../components/responses/404.yaml'

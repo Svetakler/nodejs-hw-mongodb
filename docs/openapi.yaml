@@ -1,5 +1,3 @@
-# docs/openapi.yaml
-
 openapi: 3.1.0
 info:
   version: 1.0.0
@@ -15,16 +13,32 @@ tags:
     description: Auth operations.
 servers:
   - url: http://localhost:3000
-  - url: https://example.com/api/v1
+  - url: https://nodejs-hw-mongodb-5-t154.onrender.com
+
 paths:
   /contacts:
     post:
       $ref: ../swagger/paths/contacts/post.yaml
-  /contacts/{id}:
     get:
-      $ref: ../swagger/paths/{id}/get.yaml
+      $ref: ../swagger/paths/contacts/get.yaml
+  /contacts/{contactId}:
+    get:
+      $ref: ../swagger/paths/contacts/{id}/get.yaml
+    patch:
+      $ref: ../swagger/paths/contacts/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/contacts/{id}/delete.yaml
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    Contact:
+      $ref: ../swagger/components/schemas/contact.yaml
+  responses:
+    401:
+      $ref: ../swagger/components/responses/401.yaml
+    404:
+      $ref: ../swagger/components/responses/404.yaml
