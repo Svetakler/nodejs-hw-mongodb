@@ -1,41 +1,44 @@
 type: object
 required:
-  - _id
   - name
-  - age
-  - gender
-  - avgMark
-  - onDuty
+  - phoneNumber
+  - contactType
 properties:
   _id:
     description: "Contact's id"
     type: string
-    example: 65e4decdd286b30065d54af9
+    example: '65e4decdd286b30065d54af9'
   name:
     description: "Contact's name"
     type: string
+    minLength: 3
+    maxLength: 20
     example: 'John Doe'
-  age:
-    description: "Contact's age"
-    type: number
-    example: 12
-  gender:
-    description: "Contact's age"
+  phoneNumber:
+    description: "Contact's phone number"
     type: string
-    enum: ['male', 'female', 'other']
-  avgMark:
-    description: "Contact's average mark. Should be between 1 and 12"
-    type: number
-    example: 9.7
-  onDuty:
-    description: 'Whether is contact on duty'
+    minLength: 3
+    maxLength: 20
+    example: '+123456789'
+  email:
+    description: "Contact's email"
+    type: string
+    format: email
+    example: 'john.doe@example.com'
+  isFavourite:
+    description: 'Whether the contact is marked as favourite'
     type: boolean
-    example: false
-  parentId:
-    description: "Contact's parent id"
+    example: true
+  contactType:
+    description: 'Type of contact'
     type: string
-    example: 65e4decdd286b30065d54af9
+    enum: ['work', 'home', 'personal']
+    example: 'work'
+  userId:
+    description: 'ID of the user who owns the contact'
+    type: string
+    example: '65e4decdd286b30065d54af9'
   photo:
-    description: "Link to contact's photo"
+    description: "Link to the contact's photo"
     type: string
-    example: https://res.cloudinary.com/uqwgdu/image/upload/image.png
+    example: 'https://res.cloudinary.com/uqwgdu/image/upload/image.png'
