@@ -14,7 +14,7 @@
       "url": "http://localhost:3000"
     },
     {
-      "url": "https://example.com/api/v1"
+      "url": "https://nodejs-hw-mongodb-5-t154.onrender.com"
     }
   ],
   "tags": [
@@ -30,9 +30,7 @@
   "paths": {
     "/contacts": {
       "post": {
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "summary": "Create contact",
         "operationId": "createContact",
         "description": "Create a contact with payload",
@@ -46,11 +44,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "phoneNumber",
-                  "contactType"
-                ],
+                "required": ["name", "phoneNumber", "contactType"],
                 "properties": {
                   "name": {
                     "description": "Contact's name",
@@ -80,11 +74,7 @@
                   "contactType": {
                     "description": "Type of contact",
                     "type": "string",
-                    "enum": [
-                      "work",
-                      "home",
-                      "personal"
-                    ],
+                    "enum": ["work", "home", "personal"],
                     "example": "work"
                   },
                   "userId": {
@@ -109,11 +99,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -140,9 +126,7 @@
     },
     "/contacts/{id}": {
       "get": {
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "summary": "Get contact by ID",
         "operationId": "getContactById",
         "description": "Retrieve a specific contact by its unique identifier",
@@ -223,11 +207,7 @@
     "schemas": {
       "contact": {
         "type": "object",
-        "required": [
-          "name",
-          "phoneNumber",
-          "contactType"
-        ],
+        "required": ["name", "phoneNumber", "contactType"],
         "properties": {
           "_id": {
             "description": "Contact's id",
@@ -262,11 +242,7 @@
           "contactType": {
             "description": "Type of contact",
             "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "personal"
-            ],
+            "enum": ["work", "home", "personal"],
             "example": "work"
           },
           "userId": {
@@ -289,11 +265,7 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "status",
-                "message",
-                "data"
-              ],
+              "required": ["status", "message", "data"],
               "properties": {
                 "status": {
                   "type": "integer",
@@ -305,9 +277,7 @@
                 },
                 "data": {
                   "type": "object",
-                  "required": [
-                    "message"
-                  ],
+                  "required": ["message"],
                   "properties": {
                     "message": {
                       "type": "string",
