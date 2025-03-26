@@ -10,6 +10,8 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { initMongoConnection } from './db/initMongoConnection.js';
 import { UPLOAD_DIR } from './constants/index.js';
 
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
+
 dotenv.config();
 const logger = pino();
 
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 app.use(pinoHttp({ logger }));
+
+app.use('/api-docs', swaggerDocs());
 
 app.use(router);
 

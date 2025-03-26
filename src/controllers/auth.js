@@ -1,3 +1,7 @@
+import { generateAuthUrl } from '../utils/googleOAuth2.js';
+
+import { loginOrSignupWithGoogle } from '../services/auth.js';
+
 import {
   registerUser,
   loginUser,
@@ -61,18 +65,16 @@ export const refresh = async (req, res) => {
       sessionId: newSessionId,
     } = await refreshSession({ refreshToken, sessionId });
 
+    const ONE_DAY = 24 * 60 * 60 * 1000; // 1 день
+
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'None',
+      expires: new Date(Date.now() + ONE_DAY),
     });
 
     res.cookie('sessionId', newSessionId, {
       httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'None',
+      expires: new Date(Date.now() + ONE_DAY),
     });
 
     res.status(200).json({
@@ -110,5 +112,44 @@ export const resetPasswordController = async (req, res) => {
     message: 'Password was successfully reset!',
     status: 200,
     data: {},
+  });
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+export const loginWithGoogleController = async (req, res) => {
+  const session = await loginOrSignupWithGoogle(req.body.code);
+
+  const ONE_DAY = 24 * 60 * 60 * 1000; // 1 день
+
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'None',
+  });
+
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'None',
+  });
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in via Google OAuth!',
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };
