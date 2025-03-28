@@ -158,7 +158,7 @@
           },
           {
             "in": "query",
-            "name": "limit",
+            "name": "perPage",
             "schema": {
               "type": "integer",
               "example": 10
@@ -167,12 +167,39 @@
           },
           {
             "in": "query",
-            "name": "type",
+            "name": "contactType",
             "schema": {
               "type": "string",
-              "example": "personal"
+              "enum": [
+                "work",
+                "home",
+                "personal"
+              ],
+              "example": "home"
             },
-            "description": "Filter contacts by type (e.g., personal, work)"
+            "description": "Filter contacts by type"
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string",
+              "example": "name"
+            },
+            "description": "Field to sort by, default is _id"
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "example": "asc"
+            },
+            "description": "Sort order (ascending or descending)"
           }
         ],
         "responses": {
