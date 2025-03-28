@@ -119,7 +119,7 @@
                       "example": "Successfully created a contact!"
                     },
                     "data": {
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/contacts"
                     }
                   }
                 }
@@ -197,7 +197,7 @@
                         "data": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/contact"
+                            "$ref": "#/components/schemas/contacts"
                           }
                         },
                         "page": {
@@ -287,7 +287,7 @@
                     },
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/contacts"
                     }
                   }
                 }
@@ -392,7 +392,7 @@
                       "example": "Successfully patched a contact!"
                     },
                     "data": {
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/contacts"
                     }
                   }
                 }
@@ -453,65 +453,55 @@
     },
     "schemas": {
       "Contact": {
-        "$ref": "#/components/schemas/contact"
+        "$ref": "#/components/schemas/contacts"
       },
-      "contact": {
+      "contacts": {
         "type": "object",
         "required": [
           "name",
           "phoneNumber",
-          "contactType"
+          "contactType",
+          "userId"
         ],
         "properties": {
           "_id": {
             "description": "Contact's id",
             "type": "string",
-            "example": "65e4decdd286b30065d54af9"
+            "example": "67bece37945a1d0514d7e7ac"
+          },
+          "userId": {
+            "description": "Contact's user id",
+            "type": "string",
+            "example": "67d16ece5de22626440eaa88"
           },
           "name": {
             "description": "Contact's name",
             "type": "string",
-            "minLength": 3,
-            "maxLength": 20,
             "example": "John Doe"
           },
           "phoneNumber": {
             "description": "Contact's phone number",
             "type": "string",
-            "minLength": 3,
-            "maxLength": 20,
-            "example": "+123456789"
+            "example": "+380000000004"
           },
           "email": {
             "description": "Contact's email",
             "type": "string",
-            "format": "email",
-            "example": "john.doe@example.com"
-          },
-          "isFavourite": {
-            "description": "Whether the contact is marked as favourite",
-            "type": "boolean",
-            "example": true
+            "example": "example@mail.com"
           },
           "contactType": {
-            "description": "Type of contact",
+            "description": "Contact's type",
             "type": "string",
             "enum": [
               "work",
               "home",
               "personal"
-            ],
-            "example": "work"
-          },
-          "userId": {
-            "description": "ID of the user who owns the contact",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
+            ]
           },
           "photo": {
-            "description": "Link to the contact's photo",
+            "description": "Link to contact's photo",
             "type": "string",
-            "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
+            "example": "https://res.cloudinary.com/da4ojqh6i/image/upload/v1742801694/tt1fuybinnzlmrrlsm3d.jpg"
           }
         }
       }

@@ -44,7 +44,7 @@ responses:
                 data:
                   type: array
                   items:
-                    $ref: ../../components/schemas/contact.yaml
+                    $ref: ../../components/schemas/contacts.yaml
                 page:
                   type: integer
                   example: 2
