@@ -1,8 +1,8 @@
 tags:
   - Contacts
-summary: Update a contact
+summary: Update Contact
 operationId: updateContact
-description: Update contact details by ID
+description: Update contact with provided data
 security:
   - bearerAuth: []
 parameters:
@@ -11,34 +11,58 @@ parameters:
     required: true
     schema:
       type: string
-    description: The ID of the contact to update
+      example: '67bece37945a1d0514d7e7ac'
 requestBody:
   content:
-    application/json:
+    multipart/form-data:
       schema:
         type: object
         properties:
           name:
+            description: 'Contact`s name'
             type: string
-            example: 'Jane Doe'
+            example: 'John Doe'
           phoneNumber:
+            description: 'Contact`s phone number'
             type: string
-            example: '+987654321'
+            example: '+380000000003'
           email:
+            description: 'Contact`s email'
             type: string
-            format: email
-            example: 'jane.doe@example.com'
+            example: 'example@mail.com'
           isFavourite:
+            description: 'Whether the contact is marked as a favorite'
             type: boolean
             example: false
+          contactType:
+            description: 'Contact`s type'
+            type: string
+            enum: ['work', 'home', 'personal']
+          photo:
+            description: 'Link to contact`s photo'
+            format: binary
+            type: string
+            example: 'https://res.cloudinary.com/da4ojqh6i/image/upload/v1742801694/tt1fuybinnzlmrrlsm3d.jpg'
 responses:
   '200':
-    description: Successfully updated the contact
+    description: 'Update a contact'
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/contact.yaml'
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully patched a contact!'
+            data:
+              $ref: ../../../components/schemas/contact.yaml
   '401':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: ../../../components/responses/401.yaml
   '404':
-    description: Contact not found
+    $ref: ../../../components/responses/404.yaml

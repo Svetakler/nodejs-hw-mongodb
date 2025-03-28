@@ -41,10 +41,6 @@ requestBody:
             type: string
             enum: ['work', 'home', 'personal']
             example: 'work'
-          userId:
-            description: 'ID of the user who owns the contact'
-            type: string
-            example: '65e4decdd286b30065d54af9'
           photo:
             description: "Contact's photo"
             type: string
@@ -68,7 +64,8 @@ responses:
               type: string
               example: Successfully created a contact!
             data:
-              type: object
               $ref: '../../components/schemas/contact.yaml'
   '401':
     $ref: '../../components/responses/401.yaml'
+  '404':
+    $ref: ../../components/responses/404.yaml

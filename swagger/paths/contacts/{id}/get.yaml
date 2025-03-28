@@ -6,27 +6,32 @@ description: Retrieve a specific contact by its unique identifier
 security:
   - bearerAuth: []
 parameters:
-  - name: contactId
-    in: path
+  - in: path
+    name: contactId
     required: true
     schema:
       type: string
-      example: '65ca67e7ae7f10c88b598384'
+      example: '67bece37945a1d0514d7e7ac'
 responses:
   '200':
-    description: Successfully retrieved contact
+    description: 'Get contact by id'
     content:
       application/json:
         schema:
           type: object
+          required:
+            - status
+            - message
+            - data
           properties:
             status:
               type: integer
               example: 200
             message:
               type: string
-              example: Successfully found contact
+              example: Successfully found contact with id 67bece37945a1d0514d7e7ac!
             data:
+              type: object
               $ref: '../../../components/schemas/contact.yaml'
   '401':
     $ref: '../../../components/responses/401.yaml'
